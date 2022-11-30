@@ -1,5 +1,5 @@
 function print_hello()
-    print("Hello World!")
+    print("It Works!")
 end
 
 print_hello()
