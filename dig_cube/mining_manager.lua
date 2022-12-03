@@ -1,8 +1,8 @@
 local position_manager = require("position_manager")
 local mining_manager = {}
 
-function mining_manager.start(x, y, z)
-    
+function mining_manager:start(x, y, z)
+
     print("Begin Mining")
 
     x_remainder = math.abs(x) - 1
@@ -10,30 +10,30 @@ function mining_manager.start(x, y, z)
     z_remainder = math.abs(z)
     work_direction_bit = z / math.abs(z)
 
-    position_manager.init()
+    position_manager:init()
 
     while y_remainder > 0 do
         if x_remainder > 0 then
             if turtle.detect() then
                 turtle.dig()
             end
-            position_manager.move_forward()
+            position_manager:move_forward()
             x_remainder = x_remainder - 1            
         elseif z_remainder > 0 then
-            direction = self.get_direction_of_work(work_direction_bit)
-            position_manager.rotae(direction)
+            direction = self:get_direction_of_work(work_direction_bit)
+            position_manager:rotae(direction)
             if turtle.detect() then
                 turtle.dig()
             end
-            position_manager.move_forward()
+            position_manager:move_forward()
             x_remainder = math.abs(x) - 1
             z_remainder = z_remainder - 1
         else
-            position_manager.rotate(180)
+            position_manager:rotate(180)
             if turtle.detectDown() then
                 turtle.digDown()
             end
-            position_manager.move_down()
+            position_manager:move_down()
             x_remainder = math.abs(x) - 1
             z_remainder = math.abs(z)
             y_remainder = y_remainder - 1
@@ -42,7 +42,7 @@ function mining_manager.start(x, y, z)
 end
 
 
-function mining_manager.get_direction_of_work(direction_bit)
+function mining_manager:get_direction_of_work(direction_bit)
     if position.rotation == 0 then
         if z > 0 then
             return "right"

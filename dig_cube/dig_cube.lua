@@ -8,21 +8,23 @@ function parse_arg()
     local reading_rotation = false
     local read_position = 1
 
-    local config = {
-        x_dimension = 0
-        y_dimension = 0
-        z_dimension = 0
-        offset_x = 0
-        offset_y = 0
-        offset_z = 0
-        rotation_degrees = 0
-        offset_start = false
-        rotation_start = false
-    }
+    local config = {}
+    
+    config["x_dimension"] = 0
+    config["y_dimension"] = 0
+    config["z_dimension"] = 0
+    config["offset_x"] = 0
+    config["offset_y"] = 0
+    config["offset_z"] = 0
+    config["rotation_degrees"] = 0
+    config["offset_start"] = false
+    config["rotation_start"] = false
+    
 
     for i, v in ipairs(arg) do
         if v == "-o" then
             reading_offset = true
+            read_position = 0
             config["offset_start"] = true     
 
         elseif v == "-r" then
@@ -41,7 +43,7 @@ function parse_arg()
             end
 
         elseif reading_rotation then
-            config["rotation"] = tonumber(v)
+            config["rotation_degrees"] = tonumber(v)
             reading_rotation = false           
         
         
@@ -50,25 +52,25 @@ function parse_arg()
         elseif read_position == 2 then
             config["y_dimension"] = tonumber(v)
         elseif read_position == 3 then
-            config["z_dimension"] == tonumber(v)
+            config["z_dimension"] = tonumber(v)
             read_position = 0
         end
 
-        read_position++
+        read_position = read_position + 1
     end
     return config
 end
 
 configuration = parse_arg()
-position_manager.init()
+position_manager:init()
 if (configuration["rotation_start"]) then
     print("Rotating"..tostring(configuration["rotation_degrees"].."degrees"))
-    position_manager.rotate(configuration["rotation_degrees"])
+    position_manager:rotate(configuration["rotation_degrees"])
 end
 
 if (configuration["offset_start"]) then
-    print("Moving Offset"..tostring(config["offset_x"]).."."..tostring(config["offset_y"].."."..tostring(config["offset_z"])))
-    offset.start_offset(config["offset_x"], config["offset_y"], config["offset_z"])
+    print("Moving Offset"..tostring(configuration["offset_x"]).."."..tostring(configuration["offset_y"].."."..tostring(configuration["offset_z"])))
+    offset.start_offset(configuration["offset_x"], configuration["offset_y"], configuration["offset_z"])
 end
 
 mining_manager.start(configuration.x_dimension, configuration.y_dimension, configuration.z_dimension)
