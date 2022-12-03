@@ -2,7 +2,8 @@ local position_manager = require("position_manager")
 local mining_manager = {}
 
 function mining_manager.start(x, y, z)
-
+    
+    print("Begin Mining")
 
     x_remainder = math.abs(x) - 1
     y_remainder = math.abs(y)

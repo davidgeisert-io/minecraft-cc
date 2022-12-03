@@ -1,5 +1,6 @@
 local position_manager = require("position_manager")
 local offset = require("offset")
+local mining_manager = require("mining_manager")
 
 
 function parse_arg()
@@ -22,17 +23,13 @@ function parse_arg()
     for i, v in ipairs(arg) do
         if v == "-o" then
             reading_offset = true
-            config["offset_start"] = true
-            goto continue
-        end
+            config["offset_start"] = true     
 
-        if v == "-r" then
+        elseif v == "-r" then
             reading_rotation = true
-            config["rotation_start"] = true
-            goto continue
-        end
+            config["rotation_start"] = true            
 
-        if reading_offset then
+        elseif reading_offset then
             if read_position == 1 then
                 config["offset_x"] = tonumber(v)
             elseif read_position == 2 then
@@ -41,17 +38,14 @@ function parse_arg()
                 config["offset_z"] = tonumber(v)
                 reading_offset = false
                 read_position = 0
-            end            
-            goto continue
-        end
+            end
 
-        if reading_rotation then
+        elseif reading_rotation then
             config["rotation"] = tonumber(v)
-            reading_rotation = false
-            goto continue
-        end
+            reading_rotation = false           
         
-        if read_position == 1 then
+        
+        elseif read_position == 1 then
             config["x_dimension"] = tonumber(v)
         elseif read_position == 2 then
             config["y_dimension"] = tonumber(v)
@@ -60,7 +54,6 @@ function parse_arg()
             read_position = 0
         end
 
-        ::continue::
         read_position++
     end
     return config
@@ -78,3 +71,4 @@ if (configuration["offset_start"]) then
     offset.start_offset(config["offset_x"], config["offset_y"], config["offset_z"])
 end
 
+mining_manager.start(configuration.x_dimension, configuration.y_dimension, configuration.z_dimension)
