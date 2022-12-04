@@ -66,51 +66,59 @@ end
 
 function position_manager:move(direction)
     if direction == "forward" then
-        self:move_forward()
+        return self:move_forward()
     elseif direction == "back" then
-        self:move_back()
+        return self:move_back()
     elseif direction == "up" then
-        self:move_up()
+        return self:move_up()
     elseif direction == "down" then
-        self:move_down()
+        return self:move_down()
     end
 end
 
 function position_manager:move_forward()
-    turtle.forward()
+    
+    if turtle.forward() then
+        self:update_position(1)
+        return true
+    end
+    return false
+end
+
+function position_manager:update_position(direction_modifier)
     if position.rotation == 0 then
-        position.x = position.x + 1
+        position.x = position.x + direction_modifier
     elseif position.rotation == 90 then
-        position.z = position.z + 1
+        position.z = position.z + direction_modifier
     elseif position.rotation == 180 then
-        position.x = position.x - 1
+        position.x = position.x - direction_modifier
     elseif position.rotation == 270 then
-        position.z = position.z - 1
+        position.z = position.z - direction_modifier
     end
 end
 
 function position_manager:move_back()
 
-    turtle.back()
-    if position.rotation == 0 then
-        position.x = position.x - 1
-    elseif position.rotation == 90 then
-        position.z = position.z - 1
-    elseif position.rotation == 180 then
-        position.x = position.x + 1
-    elseif position.rotation == 270 then
-        position.z = position.z + 1
+    if turtle.back() then
+        self:update_position(-1)
     end
+    return false
 end
 
 function position_manager:move_up()
-    turtle.up()
-    position.y = position.y + 1
+    if turtle.up() then
+        position.y = position.y + 1
+        return true
+    end
+    return false
 end
 
 function position_manager:move_down()
-    turtle.down()
-    position.y = position.y - 1
+    if turtle.down() then
+        position.y = position.y - 1
+        return true
+    end
+    return true
 end
 
 return position_manager
