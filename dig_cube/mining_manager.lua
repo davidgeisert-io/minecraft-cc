@@ -8,11 +8,14 @@ function mining_manager:start(x, y, z)
     x_remainder = math.abs(x) - 1
     y_remainder = math.abs(y)
     z_remainder = math.abs(z)
-    work_direction_bit = z / math.abs(z)
+    local total = x_remainder * y_remainder * z_remainder
+    local work_direction_bit = z / math.abs(z)
 
     position_manager:init()
 
     while y_remainder > 0 do
+        percent_complete = math.ceil(((x_remainder * y_remainder * z_remainder) / total) * 100)
+        print (tostring(percent_complete).."%".."Complete")
         if turtle.getFuelLevel() == 0 then
             print("Out of fuel. Attempt to refuel...")
             for i=1,16 do
