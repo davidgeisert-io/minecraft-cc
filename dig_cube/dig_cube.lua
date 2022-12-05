@@ -70,7 +70,7 @@ end
 
 if (configuration["offset_start"]) then
     print("Moving Offset"..tostring(configuration["offset_x"]).."."..tostring(configuration["offset_y"].."."..tostring(configuration["offset_z"])))
-    offset.start_offset(configuration["offset_x"], configuration["offset_y"], configuration["offset_z"])
+    offset:start_offset(configuration["offset_x"], configuration["offset_y"], configuration["offset_z"])
 end
 
-mining_manager.start(configuration.x_dimension, configuration.y_dimension, configuration.z_dimension)
+mining_manager:start(configuration.x_dimension, configuration.y_dimension, configuration.z_dimension)

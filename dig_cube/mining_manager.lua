@@ -14,7 +14,7 @@ function mining_manager:start(x, y, z)
     position_manager:init()
 
     while y_remainder > 0 do
-        percent_complete = math.ceil(((x_remainder * y_remainder * z_remainder) / total) * 100)
+        percent_complete = (x_remainder * y_remainder * z_remainder) / total) * 100
         print (tostring(percent_complete).."%".."Complete")
         if turtle.getFuelLevel() == 0 then
             print("Out of fuel. Attempt to refuel...")
@@ -31,7 +31,7 @@ function mining_manager:start(x, y, z)
                 x_remainder = x_remainder - 1          
             end  
         elseif z_remainder > 0 then
-            direction = self:get_direction_of_work(work_direction_bit)
+            local direction = self:get_direction_of_work(work_direction_bit)
             if direction then 
                 position_manager:rotate_direction(direction)
             end
@@ -40,18 +40,33 @@ function mining_manager:start(x, y, z)
             end
             
             if position_manager:move_forward() then
+                position_manager:rotate_direction(direction)
                 x_remainder = math.abs(x) - 1
                 z_remainder = z_remainder - 1
             end
         else
             position_manager:rotate(180)
-            if turtle.detectDown() then
-                turtle.digDown()
+            if y > 0 then 
+                if turtle.detectUp() then
+                    turtle.digUp()
+                end
+            else
+                if turtle.detectDown() then
+                    turtle.digDown()
+                end
             end
-            if position_manager:move_down() then
+            local did_move = false
+            if y > 0 then
+                did_move = position_manager:move_up()
+            else
+                did_move = position_manager:move_down()
+            end
+
+            if did_move then
                 x_remainder = math.abs(x) - 1
                 z_remainder = math.abs(z)
                 y_remainder = y_remainder - 1
+                work_direction_bit = -work_direction_bit
             end
         end        
     end
