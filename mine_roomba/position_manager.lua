@@ -121,4 +121,90 @@ function position_manager:move_down()
     return true
 end
 
+
+function position_manager:go_to(x, y, z, rotation)
+    moving = true
+
+    while moving do
+        self:go_to_y(y)
+        self:go_to_z(z)
+        self:go_to_x(x)
+        
+        moving = position.x ~= x or position.y ~= y or position.z ~= z
+    end
+
+    local rotation_diff = rotation - position.rotation
+
+    self:rotate(rotation_diff)
+end
+
+function position_manager:go_to_x(destination_x)
+    local diff_x = destination_x - position.x
+    local target_degrees = self:get_x_axis_target_rotation(diff_x)
+    self:rotate(target_degrees - position.rotation)
+    while position.x ~= destination_x do
+        if not self:move_forward() then
+            return false
+        end
+    end
+    return true
+end
+
+function position_manager:go_to_y(destination_y)
+    local diff_y = destination_y - position.y
+    local direction = self:get_y_direction(diff_y)
+    while position.y ~= destination_y do
+        if not self:move(direction) then
+            return false
+        end
+    end
+    return true
+end
+
+
+function position_manager:go_to_z(destination_z)
+    local diff_z = destination_z - position.z
+    local target_degrees = self:get_z_axis_target_rotation(diff_z)
+    self:rotate(target_degrees - position.rotation)
+
+    while position.z ~= destination_z do
+        if not self:move_forward() then
+            return false
+        end
+    end
+    return true
+end
+
+function position_manager:get_z_axis_target_rotation(disposition)
+    if disposition > 0 then 
+        return 90
+    end
+
+    return 270
+end
+
+function position_manager:get_x_axis_target_rotation(disposition)
+    if disposition > 0 then
+        return 0
+    end
+
+    return 180
+end
+
+function position_manager:get_y_direction(disposition)
+    if disposition > 0 then 
+        return "up"
+    end
+    return "down"
+end
+
+function position_manager:clone_position()
+    local cloned = {}
+    cloned.x = position.x
+    cloned.y = position.y
+    cloned.z = position.z
+    cloned.rotation = position.rotation
+    return cloned
+end
+
 return position_manager
