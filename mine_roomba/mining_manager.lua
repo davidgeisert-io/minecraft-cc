@@ -19,6 +19,8 @@ function mining_manager:start(x, y, z)
 
     position_manager:init()
 
+    mining_task.intended_x_direction = position.rotation
+
     local is_work_remaining = true
     while is_work_remaining do
         if turtle.getFuelLevel() == 0 then
@@ -31,9 +33,9 @@ function mining_manager:start(x, y, z)
             turtle.select(1)
         elseif mining_task.inventory_full then
             local resume_position = position_manager:clone_position()
-            position_manager:go_to(0, 0, 0, 180)
+            position_manager:go_to(0, 0, 0, 180, {"y", "z", "x"})
             inventory:dump_load()
-            position_manager:go_to(resume_position.x, resume_position.y, resume_position.z, resume_position.rotation)
+            position_manager:go_to(resume_position.x, resume_position.y, resume_position.z, resume_position.rotation, {"x", "z", "y"})
             mining_task.inventory_full = false
         else
             self:perform_mining_task(mining_task)            
@@ -50,9 +52,19 @@ function mining_manager:perform_mining_task(mining_task)
     if mining_task.x_remainder > 0 then
         self:mine_x(mining_task)
     elseif mining_task.z_remainder > 0 then
+        self:flip_intended_x_direction(mining_task)
         self:mine_z(mining_task)
     elseif mining_task.y_remainder > 0 then
         self:mine_y(mining_task)
+    end
+end
+
+function mining_manager:flip_intended_x_direction(mining_task)
+    if position.rotation == 0 then
+        mining_task.intended_x_direction = 180
+    elseif position.rotation == 180 then
+        mining_task.intended_x_direction = 0
+
     end
 end
 
@@ -105,7 +117,7 @@ function mining_manager:mine_z(mining_task)
     end
 
     if position_manager:move_forward() then
-        position_manager:rotate_direction(direction)
+        position_manager:rotate_to(mining_task.intended_x_direction)
         mining_task.x_remainder = math.abs(mining_task.x) - 1
         mining_task.z_remainder = mining_task.z_remainder - 1
     end

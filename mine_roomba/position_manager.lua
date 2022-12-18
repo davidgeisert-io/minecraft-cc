@@ -48,6 +48,11 @@ function position_manager:rotate(degrees)
     end    
 end
 
+function position_manager:rotate_to(degrees)
+    local rotation_diff = degrees - position.rotation
+    self:rotate(rotation_diff)
+end
+
 function position_manager:rotate_direction(direction)
     if direction == "left" then
         self:rotate_left()
@@ -118,18 +123,31 @@ function position_manager:move_down()
         position.y = position.y - 1
         return true
     end
-    return true
+    return false
 end
 
 
-function position_manager:go_to(x, y, z, rotation)
+function position_manager:go_to(x, y, z, rotation, order)
     moving = true
 
+    if not order then
+        order = {"y", "z", "x"}
+    end
+
     while moving do
-        self:go_to_y(y)
-        self:go_to_z(z)
-        self:go_to_x(x)
-        
+        for i,v in ipairs(order) do
+            if v == "x" and position.x ~=x then
+                self:go_to_x(x)
+            end
+
+            if v == "y" and position.y ~= y then
+                self:go_to_y(y)
+            end
+
+            if v == "z" and position.z ~= z then
+                self:go_to_z(z)
+            end            
+        end
         moving = position.x ~= x or position.y ~= y or position.z ~= z
     end
 
