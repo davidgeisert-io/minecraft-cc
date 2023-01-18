@@ -83,8 +83,7 @@ function mining_manager:mine_x(mining_task)
 end
 
 
-function mining_manager:mine_y(mining_task)
-    position_manager:rotate(180)
+function mining_manager:mine_y(mining_task)    
 
     if self:detect_y(mining_task.y) then
         local y_direction = self:get_y_trajectory_direction(mining_task.y)
@@ -93,6 +92,7 @@ function mining_manager:mine_y(mining_task)
             return
         end
         self:dig_y(mining_task.y)
+        position_manager:rotate(180)
     end
     
     if self:move_y(mining_task.y) then
