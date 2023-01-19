@@ -91,9 +91,10 @@ function mining_manager:mine_y(mining_task)
             mining_task.inventory_full = true
             return
         end
-        self:dig_y(mining_task.y)
-        position_manager:rotate(180)
+        self:dig_y(mining_task.y)        
     end
+
+    position_manager:rotate(180)
     
     if self:move_y(mining_task.y) then
         mining_task.x_remainder = math.abs(mining_task.x) - 1
